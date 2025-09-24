@@ -1,0 +1,353 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BlogSphere - Professional Blogging Platform</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --header-gradient: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            --accent-color: #ff6b6b;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Playfair Display', serif;
+        }
+        
+        /* Enhanced Header Styles */
+        .header-top {
+            background: var(--header-gradient);
+            color: white;
+        }
+        
+        .logo-text {
+            color: white !important;
+        }
+        
+        .text-accent {
+            color: var(--accent-color) !important;
+        }
+        
+        .auth-buttons .btn {
+            border-radius: 25px;
+            padding: 8px 20px;
+            font-weight: 500;
+        }
+        
+        .auth-buttons .btn-outline-primary {
+            border-color: white;
+            color: white;
+        }
+        
+        .auth-buttons .btn-outline-primary:hover {
+            background: white;
+            color: var(--header-gradient);
+        }
+        
+        .navbar {
+            background: rgba(255, 255, 255, 0.95) !important;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .navbar-nav .nav-link {
+            color: #333;
+            font-weight: 500;
+            position: relative;
+            padding: 0.5rem 1rem;
+        }
+        
+        .navbar-nav .nav-link:hover, 
+        .navbar-nav .nav-link.active {
+            color: var(--accent-color);
+        }
+        
+        .navbar-nav .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: var(--accent-color);
+            transition: all 0.3s;
+            transform: translateX(-50%);
+        }
+        
+        .navbar-nav .nav-link:hover::after,
+        .navbar-nav .nav-link.active::after {
+            width: 70%;
+        }
+        
+        /* Adjusted Margins for Center Content */
+        .container.adjusted-margin {
+            margin-left: 3%;
+            margin-right: 3%;
+            max-width: 94%;
+        }
+        
+        /* User info styles */
+        .user-info {
+            display: flex;
+            align-items: center;
+            color: white;
+            margin-right: 15px;
+        }
+        
+        .user-info i {
+            margin-right: 8px;
+            font-size: 1.1rem;
+        }
+        
+        /* Dashboard Button Styles */
+        .dashboard-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 25px;
+            padding: 8px 20px;
+            font-weight: 500;
+            margin-right: 10px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .dashboard-btn:hover {
+            background: white;
+            color: var(--header-gradient);
+            text-decoration: none;
+        }
+        
+        /* Hero Section */
+        .hero-featured {
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), 
+                        {% for post in featured_post %}{% if forloop.first %}url('{{ post.blog_image.url }}'){% endif %}{% endfor %};
+            background-size: cover;
+            background-position: center;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+        }
+        
+        .hero-content {
+            padding: 3rem;
+            color: white;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
+        }
+        
+        .post-meta {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .category-badge {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            backdrop-filter: blur(10px);
+        }
+        
+        .read-time {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        
+        .featured-tag {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: var(--accent-color);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.8rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+        
+        /* Featured Posts Section - 4 Column Grid */
+        .featured-posts-section {
+            margin: 3rem 0;
+        }
+        
+        .section-title {
+            position: relative;
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: var(--accent-color);
+        }
+        
+        .featured-post-card {
+            border: none;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            height: 100%;
+        }
+        
+        .featured-post-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+        
+        .featured-post-img {
+            height: 200px;
+            object-fit: cover;
+        }
+        
+        .featured-post-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: var(--accent-color);
+            color: white;
+            padding: 3px 10px;
+            border-radius: 15px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+        
+        /* 4-Column Grid Adjustments */
+        @media (min-width: 992px) {
+            .four-column-grid .col-lg-3 {
+                flex: 0 0 auto;
+                width: 23%;
+                margin: 0 1%;
+            }
+        }
+        
+        @media (max-width: 991px) {
+            .four-column-grid .col-md-6 {
+                flex: 0 0 auto;
+                width: 48%;
+                margin: 0 1% 2%;
+            }
+        }
+        
+        @media (max-width: 767px) {
+            .four-column-grid .col-12 {
+                flex: 0 0 auto;
+                width: 98%;
+                margin: 0 1% 2%;
+            }
+            
+            .auth-buttons {
+                margin-top: 15px;
+            }
+            
+            .user-info {
+                margin-bottom: 15px;
+                justify-content: center;
+            }
+            
+            .dashboard-btn {
+                margin-right: 5px;
+                margin-bottom: 5px;
+                padding: 6px 15px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Section -->
+    <header>
+        <div class="header-top">
+            <div class="container adjusted-margin">
+                <div class="header-top d-flex justify-content-between align-items-center py-3">
+                    <div class="logo d-flex align-items-center">
+                        <div class="logo-img bg-white rounded-circle d-flex align-items-center justify-content-center me-2">
+                            <span class="text-primary fw-bold">BS</span>
+                        </div>
+                        <div class="logo-text fs-3 fw-bold">Blog<span class="text-accent">Sphere</span></div>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        {% if user.is_authenticated %}
+                            <div class="user-info">
+                                <i class="fas fa-user"></i>
+                                <span>Welcome, {{ user.username }}</span>
+                            </div>
+                            <div class="auth-buttons">
+                                <!-- Dashboard Button Added Here -->
+                                <a href="{% url 'dashboard' %}" class="dashboard-btn">
+                                    <i class="fas fa-tachometer-alt me-1"></i>Dashboard
+                                </a>
+                                <a href="{% url 'logout' %}" class="btn btn-outline-primary">Logout</a>
+                            </div>
+                        {% else %}
+                            <div class="auth-buttons">
+                                <a href="{% url 'login' %}" class="btn btn-outline-primary me-2">Login</a>
+                                <a href="{% url 'register' %}" class="btn btn-primary" style="background: var(--accent-color); border-color: var(--accent-color);">Sign Up</a>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <nav class="navbar navbar-expand-lg navbar-light">
+            <div class="container adjusted-margin">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCategories">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarCategories">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="{% url 'home' %}">Home</a>
+                        </li>
+                        {% for cat in categories %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'posts_by_category' cat.id %}">{{ cat.category_name }}</a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    <!-- Search form -->
+                    <form class="d-flex" action="{% url 'search' %}" method="GET">
+                        <input class="form-control me-2" type="search" name="keyword" placeholder="Search" aria-label="Search">
+                        <button class="btn btn-outline-success" type="submit">Search</button>
+                    </form>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content Area -->
+    <main>
+        <!-- Your existing content goes here -->
+    </main>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

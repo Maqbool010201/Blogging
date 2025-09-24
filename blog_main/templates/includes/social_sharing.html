@@ -1,0 +1,39 @@
+<div class="social-sharing mt-4">
+    <h5>Share this post:</h5>
+    <div class="btn-group" role="group">
+        <button type="button" class="btn btn-facebook" onclick="shareOnFacebook('{{ request.build_absolute_uri }}')">
+            <i class="fab fa-facebook-f me-1"></i> Facebook
+        </button>
+        <button type="button" class="btn btn-twitter" onclick="shareOnTwitter('{{ request.build_absolute_uri }}', '{{ post.title }}')">
+            <i class="fab fa-twitter me-1"></i> Twitter
+        </button>
+        <button type="button" class="btn btn-linkedin" onclick="shareOnLinkedIn('{{ request.build_absolute_uri }}')">
+            <i class="fab fa-linkedin-in me-1"></i> LinkedIn
+        </button>
+    </div>
+</div>
+
+<style>
+.btn-facebook {
+    background-color: #3b5998;
+    color: white;
+    border-color: #3b5998;
+}
+
+.btn-twitter {
+    background-color: #1da1f2;
+    color: white;
+    border-color: #1da1f2;
+}
+
+.btn-linkedin {
+    background-color: #0077b5;
+    color: white;
+    border-color: #0077b5;
+}
+
+.btn-facebook:hover, .btn-twitter:hover, .btn-linkedin:hover {
+    opacity: 0.9;
+    color: white;
+}
+</style>

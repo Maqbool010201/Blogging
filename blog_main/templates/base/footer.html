@@ -1,0 +1,62 @@
+<!-- Footer -->
+<footer class="bg-dark text-white pt-5 pb-3 mt-5">
+    <div class="container adjusted-margin">
+        <div class="row">
+            <div class="col-lg-3 col-md-6 mb-4">
+                <h5>About BlogSphere</h5>
+                <p>BlogSphere is a platform for writers and readers to share ideas, stories, and expertise on various topics.</p>
+                <div class="social-links d-flex">
+                    <a href="#" class="me-2"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="me-2"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="me-2"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="me-2"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="#"><i class="fab fa-pinterest"></i></a>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-4">
+                <h5>Quick Links</h5>
+                <ul class="list-unstyled">
+                    <li><a href="{% url 'home' %}" class="text-white-50">Home</a></li>
+                    <li><a href="#" class="text-white-50">About Us</a></li>
+                    <li><a href="#" class="text-white-50">Write for Us</a></li>
+                    <li><a href="#" class="text-white-50">Contact</a></li>
+                    <li><a href="{% url 'search' %}" class="text-white-50">Search</a></li>
+                </ul>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-4">
+                <h5>Categories</h5>
+                <ul class="list-unstyled">
+                    {% for category in categories %}
+                    <li><a href="{% url 'posts_by_category' category.id %}" class="text-white-50">{{ category.category_name }}</a></li>
+                    {% empty %}
+                    <li><span class="text-white-50">No categories available</span></li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-4">
+                <h5>Contact Us</h5>
+                <ul class="list-unstyled">
+                    <li><i class="fas fa-map-marker-alt me-2"></i> 123 Blog Street, City, Country</li>
+                    <li><i class="fas fa-envelope me-2"></i> info@blogwebsite.com</li>
+                    <li><i class="fas fa-phone me-2"></i> +923111615105</li>
+                </ul>
+            </div>
+        </div>
+        <hr class="my-4 bg-light">
+        <div class="row">
+            <div class="col-md-6 text-center text-md-start">
+                <p class="mb-0">&copy; 2025 BlogWebsite. All rights reserved.</p>
+            </div>
+            <div class="col-md-6 text-center text-md-end">
+                <ul class="list-inline mb-0">
+                    <li class="list-inline-item"><a href="#" class="text-white-50">Privacy Policy</a></li>
+                    <li class="list-inline-item"><a href="#" class="text-white-50">Terms of Service</a></li>
+                    <li class="list-inline-item"><a href="#" class="text-white-50">Cookie Policy</a></li>
+                    <li class="list-inline-item"><a href="#" class="text-white-50">Disclaimer</a></li>
+                    <!-- Updated Sitemap Link -->
+                    <li class="list-inline-item"><a href="/sitemap.xml" class="text-white-50">Sitemap</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</footer>

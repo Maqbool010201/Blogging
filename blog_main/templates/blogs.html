@@ -1,0 +1,306 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block breadcrumbs %}
+{% include 'includes/breadcrumbs.html' %}
+{% block breadcrumb_items %}
+<li class="breadcrumb-item"><a href="{% url 'posts_by_category' post.category.id %}">{{ post.category.category_name }}</a></li>
+<li class="breadcrumb-item active" aria-current="page">{{ post.title|truncatewords:5 }}</li>
+{% endblock %}
+{% endblock %}
+
+{% block extra_head %}
+<title>{{ meta_title }}</title>
+<meta name="description" content="{{ meta_description }}">
+{% if focus_keyword %}<meta name="keywords" content="{{ focus_keyword }}">{% endif %}
+
+<!-- Open Graph Meta Tags -->
+<meta property="og:title" content="{{ og_title }}">
+<meta property="og:description" content="{{ og_description }}">
+<meta property="og:url" content="{{ request.build_absolute_uri }}">
+<meta property="og:type" content="article">
+{% if og_image %}
+<meta property="og:image" content="{{ og_image.url }}">
+{% endif %}
+<meta property="og:site_name" content="Your Blog Name">
+
+<!-- Twitter Card Meta Tags -->
+<meta name="twitter:card" content="{{ twitter_card_type }}">
+{% if twitter_site %}
+<meta name="twitter:site" content="@{{ twitter_site }}">
+{% endif %}
+<meta name="twitter:title" content="{{ og_title }}">
+<meta name="twitter:description" content="{{ og_description }}">
+{% if og_image %}
+<meta name="twitter:image" content="{{ og_image.url }}">
+{% endif %}
+
+<!-- Article Meta Tags -->
+<meta property="article:published_time" content="{{ post.created_at|date:'c' }}">
+<meta property="article:modified_time" content="{{ post.updated_at|date:'c' }}">
+<meta property="article:author" content="{{ post.author.get_full_name|default:post.author.username }}">
+<meta property="article:section" content="{{ post.category.category_name }}">
+
+<!-- Schema.org Structured Data -->
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "{{ schema_type }}",
+    "headline": "{{ meta_title }}",
+    "description": "{{ meta_description }}",
+    "author": {
+        "@type": "Person",
+        "name": "{{ post.author.get_full_name|default:post.author.username }}"
+    },
+    "datePublished": "{{ post.created_at|date:'c' }}",
+    "dateModified": "{{ post.updated_at|date:'c' }}",
+    {% if post.blog_image %}
+    "image": "{{ post.blog_image.url }}",
+    {% endif %}
+    "publisher": {
+        "@type": "Organization",
+        "name": "Your Blog Name",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "{% static 'images/logo.png' %}"
+        }
+    }
+}
+</script>
+
+<!-- Pagination Meta Tags -->
+{% if is_paginated %}
+    {% if page_obj.has_previous %}
+        <link rel="prev" href="?page={{ page_obj.previous_page_number }}">
+    {% endif %}
+    {% if page_obj.has_next %}
+        <link rel="next" href="?page={{ page_obj.next_page_number }}">
+    {% endif %}
+{% endif %}
+{% endblock %}
+
+{% block content %}
+    <!-- Post Header -->
+    <div class="post-header text-center">
+        <div class="container adjusted-margin">
+            <!-- Category Badge -->
+            <div class="mb-3">
+                <a href="{% url 'posts_by_category' post.category.id %}" class="category-badge fs-5 px-3 py-2">
+                    <i class="fas fa-folder me-2"></i> {{ post.category.category_name }}
+                </a>
+            </div>
+            
+            <!-- Blog Title -->
+            <h1 class="post-title">{{ post.title }}</h1>
+            
+            <!-- Post Meta Information -->
+            <div class="post-meta">
+                <span><i class="fas fa-user me-1"></i> {{ post.author.get_full_name|default:post.author.username }}</span>
+                <span><i class="fas fa-clock me-1"></i> {{ post.created_at|timesince }} ago</span>
+                {% if focus_keyword %}
+                <span><i class="fas fa-tag me-1"></i> {{ focus_keyword }}</span>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container adjusted-margin">
+        <div class="row">
+            <!-- Article Content -->
+            <div class="col-lg-8">
+                <!-- Top Ad Placement -->
+                <div class="ad-container">
+                    <span class="ad-label">Advertisement</span>
+                    <div class="ad-placeholder">
+                        <p>Ad Placement - Top of Content</p>
+                    </div>
+                </div>
+                
+                <article class="post-content">
+                    <!-- Short Description -->
+                    <div class="short-description mb-4">
+                        <p class="lead fst-italic">{{ post.short_description }}</p>
+                    </div>
+                    
+                    <!-- Featured Image -->
+                    {% if post.blog_image %}
+                    <div class="featured-image text-center mb-4">
+                        <img src="{{ post.blog_image.url }}" alt="{{ post.title }}" class="img-fluid rounded shadow">
+                        {% if post.blog_image.caption %}
+                        <div class="image-caption text-muted mt-2"><small>{{ post.blog_image.caption }}</small></div>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Mid-Content Ad Placement -->
+                    <div class="ad-container">
+                        <span class="ad-label">Advertisement</span>
+                        <div class="ad-placeholder">
+                            <p>Ad Placement - Middle of Content</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Blog Body Content -->
+                    <div class="blog-body mt-4">
+                        {{ post.blog_body|safe }}
+                    </div>
+                    
+                    <!-- Post Tags (if you implement tags later) -->
+                    {% if post.tags.all %}
+                    <div class="post-tags mt-4">
+                        <h5>Tags:</h5>
+                        {% for tag in post.tags.all %}
+                        <a href="{% url 'posts_by_tag' tag.slug %}" class="badge bg-secondary text-decoration-none me-1">{{ tag.name }}</a>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Author Bio (optional) - Removed image as requested -->
+                    <div class="author-bio mt-5 p-4 bg-light rounded">
+                        <h5>About the Author</h5>
+                        <p class="mb-0">{{ post.author.profile.bio|default:"This author hasn't written a bio yet." }}</p>
+                    </div>
+                    
+                    <!-- Social Sharing Buttons -->
+                    {% include 'includes/social_sharing.html' %}
+                    
+                    <!-- Bottom Ad Placement -->
+                    <div class="ad-container mt-4">
+                        <span class="ad-label">Advertisement</span>
+                        <div class="ad-placeholder">
+                            <p>Ad Placement - Bottom of Content</p>
+                        </div>
+                    </div>
+                </article>
+                
+                <!-- Related Posts Section -->
+                {% if related_posts %}
+                <div class="related-posts-section mt-5">
+                    <h2 class="section-title">Related Posts in {{ post.category.category_name }}</h2>
+                    <div class="related-posts-small">
+                        {% for related_post in related_posts %}
+                        <a href="{% url 'blog_detail' related_post.slug %}" class="text-decoration-none">
+                            <div class="related-post-small">
+                                <span class="category-tag">{{ related_post.category.category_name }}</span>
+                                
+                                <div class="related-content-small">
+                                    <h3 class="related-title-small">{{ related_post.title|truncatewords:8 }}</h3>
+                                    <div class="related-meta-small">
+                                        <span>{{ related_post.created_at|timesince }} ago</span>
+                                        <span><i class="fas fa-user me-1"></i> {{ related_post.author.username }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+                
+                <!-- Comments Section (if you implement comments later) -->
+                <div class="comments-section mt-5">
+                    <h3 class="mb-4">Comments (0)</h3>
+                    <div class="alert alert-info">
+                        Comments feature coming soon!
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <!-- Sidebar Ad Placement -->
+                <div class="ad-sidebar">
+                    <span class="ad-label">Advertisement</span>
+                    <div class="ad-placeholder" style="min-height: 250px;">
+                        <!-- Google AdSense or affiliate ad code goes here -->
+                        <p>Sidebar Ad Placement</p>
+                    </div>
+                </div>
+                
+                <!-- Categories Widget -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Categories</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-group list-group-flush">
+                            {% for category in categories %}
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <a href="{% url 'posts_by_category' category.id %}" class="text-decoration-none">{{ category.category_name }}</a>
+                                <span class="badge bg-primary rounded-pill">{{ category.post_count }}</span>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Sidebar Ad Placement -->
+                <div class="ad-sidebar">
+                    <span class="ad-label">Advertisement</span>
+                    <div class="ad-placeholder" style="min-height: 250px;">
+                        <!-- Google AdSense or affiliate ad code goes here -->
+                        <p>Sidebar Ad Placement</p>
+                    </div>
+                </div>
+                
+                <!-- Newsletter Widget -->
+                <div class="card mt-4">
+                    <div class="card-body text-center">
+                        <h5>Subscribe to Newsletter</h5>
+                        <p class="text-muted">Get the latest posts delivered right to your inbox</p>
+                        <form>
+                            <div class="mb-3">
+                                <input type="email" class="form-control" placeholder="Your email address">
+                            </div>
+                            <button class="btn btn-primary w-100">Subscribe</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Add animation to elements when they come into view
+    document.addEventListener('DOMContentLoaded', function() {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = 1;
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, { threshold: 0.1 });
+        
+        // Animate post content
+        const postContent = document.querySelector('.post-content');
+        if (postContent) {
+            postContent.style.opacity = 0;
+            postContent.style.transform = 'translateY(20px)';
+            postContent.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
+            observer.observe(postContent);
+        }
+        
+        // Animate related posts
+        const relatedPosts = document.querySelectorAll('.related-post-small');
+        relatedPosts.forEach((post, index) => {
+            post.style.opacity = 0;
+            post.style.transform = 'translateY(20px)';
+            post.style.transition = `opacity 0.8s ease ${index * 0.2}s, transform 0.8s ease ${index * 0.2}s`;
+            observer.observe(post);
+        });
+        
+        // Animate category badges
+        const categoryBadges = document.querySelectorAll('.category-badge, .category-tag');
+        categoryBadges.forEach((badge, index) => {
+            badge.style.opacity = 0;
+            badge.style.transform = 'scale(0.8)';
+            badge.style.transition = `opacity 0.5s ease ${index * 0.1}s, transform 0.5s ease ${index * 0.1}s`;
+            observer.observe(badge);
+        });
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,406 @@
+{% extends '../base/base.html' %}
+
+{% block content %}
+<div class="dashboard-container">
+    <!-- Include Left Sidebar -->
+    {% include 'dashboard/leftsidebar.html' %}
+
+    <!-- Main Content Area -->
+    <div class="main-content">
+        <div class="header">
+            <h2>Dashboard Overview</h2>
+            <div class="user-info">
+                {% if user.is_authenticated %}
+                    <img src="https://ui-avatars.com/api/?name={{ user.username }}&background=4e54c8&color=fff" alt="User">
+                    <span>{{ user.username }}</span>
+                {% else %}
+                    <img src="https://ui-avatars.com/api/?name=Guest&background=4e54c8&color=fff" alt="User">
+                    <span>Guest User</span>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="content-main">
+            <div class="dashboard-cards">
+                <!-- Total Posts Card -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Total Posts</h3>
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+                    <div class="card-body">
+                        <h2>{{ blogs_count }}</h2>
+                        <p>All blog posts in the system</p>
+                    </div>
+                    <div class="card-footer">
+                        <a href="#">View all posts <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+                
+                <!-- Categories Card -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Categories</h3>
+                        <i class="fas fa-th-large"></i>
+                    </div>
+                    <div class="card-body">
+                        <h2>{{ category_count }}</h2>
+                        <p>Total categories available</p>
+                    </div>
+                    <div class="card-footer">
+                        <a href="{% url 'categories' %}">Manage categories <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+                
+                <!-- Recent Activity Card -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Recent Activity</h3>
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="card-body">
+                        <h2>{% now "d" %}</h2>
+                        <p>Active today</p>
+                    </div>
+                    <div class="card-footer">
+                        <a href="#">View activity log <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+                
+                <!-- User Engagement Card -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3>User Engagement</h3>
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="card-body">
+                        <h2>{% widthratio blogs_count 10 1 %}%</h2>
+                        <p>Growth this month</p>
+                    </div>
+                    <div class="card-footer">
+                        <a href="#">View analytics <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activity Section -->
+            <div class="card recent-activity">
+                <div class="card-header">
+                    <h3>Recent Activity</h3>
+                    <a href="#" class="view-all">View All</a>
+                </div>
+                <div class="card-body">
+                    {% if blogs_count > 0 %}
+                        <div class="activity-item">
+                            <i class="fas fa-file-alt"></i>
+                            <div class="activity-content">
+                                <p><strong>{{ blogs_count }} total posts</strong> published in your blog</p>
+                                <span class="activity-time">Just now</span>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="activity-item">
+                            <i class="fas fa-exclamation-circle"></i>
+                            <div class="activity-content">
+                                <p><strong>No posts published yet</strong></p>
+                                <span class="activity-time">Get started by creating your first post</span>
+                            </div>
+                        </div>
+                    {% endif %}
+                    
+                    {% if category_count > 0 %}
+                        <div class="activity-item">
+                            <i class="fas fa-th-large"></i>
+                            <div class="activity-content">
+                                <p><strong>{{ category_count }} categories</strong> created for organizing content</p>
+                                <span class="activity-time">Just now</span>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="activity-item">
+                            <i class="fas fa-exclamation-circle"></i>
+                            <div class="activity-content">
+                                <p><strong>No categories created yet</strong></p>
+                                <span class="activity-time">Create categories to organize your posts</span>
+                            </div>
+                        </div>
+                    {% endif %}
+                    
+                    <div class="activity-item">
+                        <i class="fas fa-user-clock"></i>
+                        <div class="activity-content">
+                            <p><strong>Last login:</strong> {% now "F j, Y, g:i a" %}</p>
+                            <span class="activity-time">Active session</span>
+                        </div>
+                    </div>
+                    
+                    {% if user.is_authenticated %}
+                        <div class="activity-item">
+                            <i class="fas fa-user-check"></i>
+                            <div class="activity-content">
+                                <p>Welcome back, <strong>{{ user.username }}</strong>!</p>
+                                <span class="activity-time">Ready to manage your content</span>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    .dashboard-container {
+        background-color: #f8fafc;
+        color: #333;
+        display: flex;
+        min-height: calc(100vh - 200px);
+        margin-bottom: 0;
+    }
+
+    .main-content {
+        flex: 1;
+        padding: 30px;
+        min-height: 100%;
+        overflow: auto;
+    }
+
+    .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+        background: white;
+        padding: 20px 25px;
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        border-left: 4px solid #4f46e5;
+    }
+
+    .header h2 {
+        font-size: 28px;
+        font-weight: 700;
+        color: #1e293b;
+    }
+
+    .user-info {
+        display: flex;
+        align-items: center;
+        background: #f1f5f9;
+        padding: 8px 15px;
+        border-radius: 50px;
+    }
+
+    .user-info img {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        margin-right: 10px;
+        border: 2px solid #4f46e5;
+    }
+
+    .user-info span {
+        font-weight: 500;
+        color: #475569;
+    }
+
+    .dashboard-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 25px;
+        margin-bottom: 30px;
+    }
+
+    .card {
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
+        border-top: 4px solid #4f46e5;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        background: linear-gradient(90deg, #4f46e5, #7c3aed);
+    }
+
+    .card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+    }
+
+    .card-header h3 {
+        font-size: 18px;
+        font-weight: 600;
+        color: #475569;
+    }
+
+    .card-header i {
+        font-size: 24px;
+        color: #4f46e5;
+        background: rgba(79, 70, 229, 0.1);
+        width: 50px;
+        height: 50px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .card-body h2 {
+        font-size: 36px;
+        font-weight: 700;
+        color: #1e293b;
+        margin-bottom: 10px;
+    }
+
+    .card-body p {
+        color: #64748b;
+        font-size: 14px;
+        font-weight: 500;
+    }
+
+    .card-footer {
+        margin-top: 20px;
+        font-size: 14px;
+    }
+
+    .card-footer a {
+        color: #4f46e5;
+        font-weight: 600;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        transition: all 0.3s ease;
+    }
+
+    .card-footer a:hover {
+        color: #7c3aed;
+        transform: translateX(5px);
+    }
+
+    .card-footer i {
+        margin-left: 5px;
+        font-size: 12px;
+    }
+
+    .recent-activity {
+        margin-top: 20px;
+    }
+
+    .recent-activity .card-header {
+        border-bottom: 1px solid #e2e8f0;
+        padding-bottom: 15px;
+    }
+
+    .recent-activity .card-header h3 {
+        margin: 0;
+    }
+
+    .view-all {
+        color: #4f46e5;
+        font-weight: 600;
+        text-decoration: none;
+        font-size: 14px;
+    }
+
+    .activity-item {
+        display: flex;
+        align-items: flex-start;
+        padding: 15px 0;
+        border-bottom: 1px solid #f1f5f9;
+    }
+
+    .activity-item:last-child {
+        border-bottom: none;
+    }
+
+    .activity-item i {
+        background: #f1f5f9;
+        color: #4f46e5;
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 15px;
+        flex-shrink: 0;
+    }
+
+    .activity-content p {
+        margin: 0;
+        color: #475569;
+        font-weight: 500;
+    }
+
+    .activity-time {
+        font-size: 12px;
+        color: #94a3b8;
+        margin-top: 5px;
+        display: block;
+    }
+
+    @media (max-width: 1100px) {
+        .dashboard-container {
+            flex-direction: column;
+        }
+        
+        .main-content {
+            margin-left: 0;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .main-content {
+            padding: 20px;
+        }
+        
+        .dashboard-cards {
+            grid-template-columns: 1fr;
+        }
+        
+        .header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        
+        .user-info {
+            margin-top: 15px;
+        }
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const blogsCount = {{ blogs_count|default:0 }};
+        const engagementElement = document.querySelector('.card:nth-child(4) .card-body h2');
+        if (engagementElement) {
+            const engagement = Math.min(100, Math.round(blogsCount / 10));
+            engagementElement.textContent = engagement + '%';
+        }
+    });
+</script>
+{% endblock %}

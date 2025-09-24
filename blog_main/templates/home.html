@@ -1,333 +1,324 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BlogSphere - Professional Blogging Platform</title>
-    <!-- Bootstrap 5 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-</head>
-<body>
-    <!-- Header Section -->
-    <header>
-        <div class="container">
-            <div class="header-top d-flex justify-content-between align-items-center py-3">
-                <div class="logo d-flex align-items-center">
-                    <div class="logo-img bg-primary rounded-circle d-flex align-items-center justify-content-center me-2">
-                        <span class="text-white fw-bold">BS</span>
-                    </div>
-                    <div class="logo-text fs-3 fw-bold text-dark">Blog<span class="text-accent">Sphere</span></div>
-                </div>
-                <div class="auth-buttons">
-                    <a href="#" class="btn btn-outline-primary me-2">Login</a>
-                    <a href="#" class="btn btn-primary">Sign Up</a>
-                </div>
-            </div>
-        </div>
-        
-        <nav class="navbar navbar-expand-lg navbar-light bg-light">
-            <div class="container">
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCategories">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarCategories">
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        <li class="nav-item">
-                            <a class="nav-link active" href="#">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Technology</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Travel</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Food</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Health</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Lifestyle</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Finance</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Sports</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Entertainment</a>
-                        </li>
-                    </ul>
-                    <form class="d-flex">
-                        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                        <button class="btn btn-outline-success" type="submit">Search</button>
-                    </form>
-                </div>
-            </div>
-        </nav>
-    </header>
+{% extends 'base/base.html' %}
 
-    <!-- Hero Section -->
-    <section class="hero bg-primary text-white py-5">
-        <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-lg-8 text-center">
-                    <h1 class="display-4 fw-bold mb-3">Discover Stories, Ideas, and Expertise</h1>
-                    <p class="lead mb-4">Join our community of readers and writers who share insightful perspectives on various topics.</p>
-                    <a href="#" class="btn btn-light btn-lg">Start Reading</a>
+{% block content %}
+
+<!-- Hero Section with First Featured Post -->
+<section class="container adjusted-margin my-5">
+    {% for post in featured_post %}
+        {% if forloop.first %}
+        <div class="hero-featured position-relative rounded-4 overflow-hidden shadow-lg">
+            <!-- Changed to right side with warning color -->
+            <span class="featured-tag bg-warning text-dark px-3 py-1 rounded-pill position-absolute top-0 end-0 m-3 z-1">
+                <i class="fas fa-star me-1"></i>FEATURED
+            </span>
+            <div class="hero-content position-absolute bottom-0 start-0 w-100 text-white p-4" style="background: linear-gradient(transparent, rgba(0,0,0,0.8));">
+                <div class="post-meta d-flex align-items-center gap-3 mb-2 flex-wrap">
+                    <span class="d-flex align-items-center"><i class="fas fa-user me-1"></i> {{ post.author.username }}</span>
+                    <span class="read-time d-flex align-items-center"><i class="far fa-clock me-1"></i> {{ post.estimated_reading_time }} min read</span>
+                    <span class="category-badge bg-light text-dark px-2 py-1 rounded-pill">{{ post.category.category_name }}</span>
+                    <span class="d-flex align-items-center"><i class="far fa-calendar me-1"></i> {{ post.created_at|timesince }} ago</span>
+                </div>
+                <h1 class="display-5 fw-bold mb-3"><a href="{% url 'blog_detail' post.slug %}" class="text-white text-decoration-none">{{ post.title }}</a></h1>
+                <p class="lead mb-4">{{ post.short_description }}</p>
+                <div class="d-flex gap-3">
+                    <a href="{% url 'blog_detail' post.slug %}" class="btn btn-light btn-lg rounded-pill px-4">Read Story</a>
+                    <button class="btn btn-outline-light btn-lg rounded-circle"><i class="far fa-bookmark"></i></button>
                 </div>
             </div>
+            <img src="{{ post.blog_image.url }}" class="img-fluid w-100" alt="{{ post.title }}" style="height: 400px; object-fit: cover;">
         </div>
-    </section>
+        {% endif %}
+    {% endfor %}
+</section>
 
-    <!-- Main Content -->
-    <main class="container my-5">
-        <div class="row">
-            <!-- Blog Posts Section -->
-            <div class="col-lg-8">
-                <div class="row">
-                    <!-- Post 1 -->
-                    <div class="col-md-6 mb-4">
-                        <div class="card h-100 post-card">
-                            <div class="post-img placeholder-img bg-light d-flex align-items-center justify-content-center">
-                                <span class="text-muted">Featured Image</span>
-                            </div>
-                            <div class="card-body">
-                                <h3 class="card-title post-title">The Future of Artificial Intelligence in Everyday Life</h3>
-                                <p class="card-text post-excerpt">Exploring how AI is transforming our daily routines and what to expect in the coming years.</p>
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <small class="text-muted">John Doe</small>
-                                    <small class="text-muted">May 15, 2023</small>
-                                </div>
+<!-- Featured Posts Section - 4 Column Grid -->
+{% if featured_post|length > 1 %}
+<section class="container adjusted-margin featured-posts-section my-5">
+    <h3 class="section-title fw-bold mb-4 pb-2 border-bottom border-warning text-warning">
+        <i class="fas fa-star me-2"></i>Featured Posts
+    </h3>
+    <div class="row four-column-grid">
+        {% for post in featured_post %}
+            {% if not forloop.first %}
+            <div class="col-lg-3 col-md-6 col-12 mb-4">
+                <div class="card featured-post-card border-0 shadow-sm h-100 overflow-hidden">
+                    <span class="featured-post-badge bg-warning text-dark px-2 py-1 small position-absolute end-0 m-2 rounded-pill z-1">Featured</span>
+                    <div class="position-relative overflow-hidden">
+                        <img src="{{ post.blog_image.url }}" class="card-img-top featured-post-img" alt="{{ post.title }}" style="height: 200px; object-fit: cover;">
+                        <div class="card-img-overlay d-flex align-items-end p-0">
+                            <div class="w-100 p-3 text-white" style="background: linear-gradient(transparent, rgba(0,0,0,0.7));">
+                                <span class="badge bg-light text-dark mb-1">{{ post.category.category_name }}</span>
                             </div>
                         </div>
                     </div>
-                    
-                    <!-- Post 2 -->
-                    <div class="col-md-6 mb-4">
-                        <div class="card h-100 post-card">
-                            <div class="post-img placeholder-img bg-light d-flex align-items-center justify-content-center">
-                                <span class="text-muted">Featured Image</span>
-                            </div>
-                            <div class="card-body">
-                                <h3 class="card-title post-title">10 Best Travel Destinations for 2023</h3>
-                                <p class="card-text post-excerpt">Discover the most amazing places to visit this year, from hidden gems to popular hotspots.</p>
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <small class="text-muted">Jane Smith</small>
-                                    <small class="text-muted">May 12, 2023</small>
-                                </div>
-                            </div>
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <small class="text-muted">{{ post.created_at|timesince }} ago</small>
+                        </div>
+                        <h5 class="card-title fw-bold"><a href="{% url 'blog_detail' post.slug %}" class="text-dark text-decoration-none">{{ post.title|truncatewords:8 }}</a></h5>
+                        <p class="card-text text-muted">{{ post.short_description|truncatewords:15 }}</p>
+                    </div>
+                    <div class="card-footer bg-transparent border-0 pt-0">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <small class="text-muted"><i class="fas fa-user me-1"></i> {{ post.author.username }}</small>
+                            <a href="{% url 'blog_detail' post.slug %}" class="btn btn-sm btn-outline-warning rounded-pill">Read More</a>
                         </div>
                     </div>
-                    
-                    <!-- Post 3 -->
-                    <div class="col-md-6 mb-4">
-                        <div class="card h-100 post-card">
-                            <div class="post-img placeholder-img bg-light d-flex align-items-center justify-content-center">
-                                <span class="text-muted">Featured Image</span>
-                            </div>
-                            <div class="card-body">
-                                <h3 class="card-title post-title">Healthy Eating on a Budget: Tips and Recipes</h3>
-                                <p class="card-text post-excerpt">Learn how to maintain a nutritious diet without breaking the bank with these practical tips.</p>
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <small class="text-muted">Mike Johnson</small>
-                                    <small class="text-muted">May 10, 2023</small>
-                                </div>
-                            </div>
+                </div>
+            </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+</section>
+{% endif %}
+
+<!-- Main Content -->
+<main class="container adjusted-margin my-5">
+    <div class="row">
+        <!-- Blog Posts Section -->
+        <div class="col-lg-8">
+            <h3 class="section-title fw-bold mb-4 pb-2 border-bottom border-warning text-warning">
+                <i class="fas fa-clock me-2"></i>Recent Articles
+            </h3>
+            <div class="row">
+                <!-- Regular Posts -->
+                {% for post in regular_posts %}
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100 post-card border-0 shadow-sm overflow-hidden">
+                        <div class="position-relative">
+                            <img src="{{ post.blog_image.url }}" class="card-img-top" alt="{{ post.title }}" style="height: 200px; object-fit: cover;">
+                            <span class="badge bg-warning text-dark position-absolute top-0 end-0 m-2">{{ post.category.category_name }}</span>
                         </div>
-                    </div>
-                    
-                    <!-- Post 4 -->
-                    <div class="col-md-6 mb-4">
-                        <div class="card h-100 post-card">
-                            <div class="post-img placeholder-img bg-light d-flex align-items-center justify-content-center">
-                                <span class="text-muted">Featured Image</span>
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <small class="text-muted">{{ post.created_at|timesince }} ago</small>
                             </div>
-                            <div class="card-body">
-                                <h3 class="card-title post-title">The Impact of Remote Work on Productivity</h3>
-                                <p class="card-text post-excerpt">Analyzing how working from home has changed employee performance and business outcomes.</p>
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <small class="text-muted">Sarah Williams</small>
-                                    <small class="text-muted">May 8, 2023</small>
+                            <h3 class="card-title post-title fw-bold"><a href="{% url 'blog_detail' post.slug %}" class="text-dark text-decoration-none">{{ post.title }}</a></h3>
+                            <p class="card-text post-excerpt text-muted">{{ post.short_description|truncatewords:20 }}</p>
+                        </div>
+                        <div class="card-footer bg-transparent border-0 pt-0">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="d-flex align-items-center">
+                                    <small class="text-muted"><i class="fas fa-user me-1"></i> {{ post.author.username }}</small>
                                 </div>
+                                <a href="{% url 'blog_detail' post.slug %}" class="btn btn-sm btn-outline-warning rounded-pill">Read More</a>
                             </div>
                         </div>
                     </div>
                 </div>
-                
-                <!-- Pagination -->
-                <nav aria-label="Page navigation" class="mt-4">
-                    <ul class="pagination justify-content-center">
-                        <li class="page-item disabled">
-                            <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
-                        </li>
-                        <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                        <li class="page-item"><a class="page-link" href="#">2</a></li>
-                        <li class="page-item"><a class="page-link" href="#">3</a></li>
-                        <li class="page-item">
-                            <a class="page-link" href="#">Next</a>
-                        </li>
-                    </ul>
-                </nav>
+                {% endfor %}
             </div>
             
-            <!-- Sidebar -->
-            <div class="col-lg-4">
-                <!-- Ad Placement 1 -->
-                <div class="sidebar-widget mb-4">
-                    <div class="ad-placeholder placeholder-img bg-light d-flex align-items-center justify-content-center py-5">
-                        <div class="text-center text-muted">
-                            <h5>Advertisement Space</h5>
-                            <p>Controlled via Django Admin</p>
-                        </div>
-                    </div>
+            <!-- Pagination -->
+            <nav aria-label="Page navigation" class="mt-5">
+                <ul class="pagination justify-content-center">
+                    {% if regular_posts.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link rounded-pill mx-1" href="?page={{ regular_posts.previous_page_number }}" tabindex="-1">
+                            <i class="fas fa-chevron-left"></i> Previous
+                        </a>
+                    </li>
+                    {% else %}
+                    <li class="page-item disabled">
+                        <a class="page-link rounded-pill mx-1" href="#" tabindex="-1" aria-disabled="true">
+                            <i class="fas fa-chevron-left"></i> Previous
+                        </a>
+                    </li>
+                    {% endif %}
+                    
+                    {% for i in regular_posts.paginator.page_range %}
+                        {% if regular_posts.number == i %}
+                        <li class="page-item active"><a class="page-link rounded-circle mx-1 bg-warning border-warning" href="#">{{ i }}</a></li>
+                        {% else %}
+                        <li class="page-item"><a class="page-link rounded-circle mx-1" href="?page={{ i }}">{{ i }}</a></li>
+                        {% endif %}
+                    {% endfor %}
+                    
+                    {% if regular_posts.has_next %}
+                    <li class="page-item">
+                        <a class="page-link rounded-pill mx-1" href="?page={{ regular_posts.next_page_number }}">
+                            Next <i class="fas fa-chevron-right"></i>
+                        </a>
+                    </li>
+                    {% else %}
+                    <li class="page-item disabled">
+                        <a class="page-link rounded-pill mx-1" href="#">
+                            Next <i class="fas fa-chevron-right"></i>
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+        
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+            <!-- Ad Placement 1 -->
+            <div class="sidebar-widget mb-4">
+                <div class="ad-placeholder bg-light rounded-3 p-4 text-center border-dashed">
+                    <h5 class="text-muted">Advertisement Space</h5>
+                    <p class="small text-muted">Controlled via Django Admin</p>
                 </div>
-                
-                <!-- Popular Posts -->
-                <div class="sidebar-widget mb-4">
-                    <div class="card">
-                        <div class="card-body">
-                            <h4 class="widget-title">Popular Posts</h4>
-                            <ul class="list-unstyled popular-posts">
-                                <li class="popular-post d-flex mb-3">
-                                    <div class="popular-post-img placeholder-img me-3"></div>
-                                    <div class="popular-post-content">
-                                        <h6>How to Improve Your Sleep Quality</h6>
-                                        <small class="text-muted">May 14, 2023</small>
-                                    </div>
-                                </li>
-                                <li class="popular-post d-flex mb-3">
-                                    <div class="popular-post-img placeholder-img me-3"></div>
-                                    <div class="popular-post-content">
-                                        <h6>Beginner's Guide to Mindfulness Meditation</h6>
-                                        <small class="text-muted">May 11, 2023</small>
-                                    </div>
-                                </li>
-                                <li class="popular-post d-flex">
-                                    <div class="popular-post-img placeholder-img me-3"></div>
-                                    <div class="popular-post-content">
-                                        <h6>The Evolution of Web Development in 2023</h6>
-                                        <small class="text-muted">May 7, 2023</small>
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Subscribe Form -->
-                <div class="sidebar-widget mb-4">
-                    <div class="card">
-                        <div class="card-body">
-                            <h4 class="widget-title">Subscribe to Newsletter</h4>
-                            <p class="card-text">Get the latest posts delivered straight to your inbox.</p>
-                            <form class="subscribe-form">
-                                <div class="mb-3">
-                                    <input type="email" class="form-control" placeholder="Your email address">
+            </div>
+            
+            <!-- Popular Posts -->
+            <div class="sidebar-widget mb-4">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body">
+                        <h4 class="widget-title fw-bold mb-3 pb-2 border-bottom border-warning text-warning">
+                            <i class="fas fa-fire me-2"></i>Popular Posts
+                        </h4>
+                        <ul class="list-unstyled popular-posts">
+                            {% for post in featured_post|slice:":3" %}
+                            <li class="popular-post mb-3 pb-3 border-bottom">
+                                <div class="popular-post-content">
+                                    <h6 class="fw-bold"><a href="{% url 'blog_detail' post.slug %}" class="text-dark text-decoration-none">{{ post.title|truncatewords:5 }}</a></h6>
+                                    <small class="text-muted">{{ post.created_at|timesince }} ago</small>
                                 </div>
-                                <button type="submit" class="btn btn-primary w-100">Subscribe</button>
-                            </form>
-                        </div>
+                            </li>
+                            {% endfor %}
+                        </ul>
                     </div>
                 </div>
-                
-                <!-- Ad Placement 2 -->
-                <div class="sidebar-widget mb-4">
-                    <div class="ad-placeholder placeholder-img bg-light d-flex align-items-center justify-content-center py-5">
-                        <div class="text-center text-muted">
-                            <h5>Advertisement Space</h5>
-                            <p>Controlled via Django Admin</p>
-                        </div>
+            </div>
+            
+            <!-- Subscribe Form -->
+            <div class="sidebar-widget mb-4">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body">
+                        <h4 class="widget-title fw-bold mb-3 pb-2 border-bottom border-warning text-warning">
+                            <i class="fas fa-envelope me-2"></i>Subscribe to Newsletter
+                        </h4>
+                        <p class="card-text text-muted">Get the latest posts delivered straight to your inbox.</p>
+                        <form class="subscribe-form">
+                            <div class="mb-3">
+                                <input type="email" class="form-control rounded-pill" placeholder="Your email address">
+                            </div>
+                            <button type="submit" class="btn btn-warning w-100 rounded-pill">Subscribe</button>
+                        </form>
                     </div>
                 </div>
-                
-                <!-- Categories -->
-                <div class="sidebar-widget">
-                    <div class="card">
-                        <div class="card-body">
-                            <h4 class="widget-title">Categories</h4>
-                            <ul class="list-unstyled categories-list">
-                                <li><a href="#">Technology <span class="badge bg-primary float-end">24</span></a></li>
-                                <li><a href="#">Travel <span class="badge bg-primary float-end">18</span></a></li>
-                                <li><a href="#">Food <span class="badge bg-primary float-end">15</span></a></li>
-                                <li><a href="#">Health <span class="badge bg-primary float-end">22</span></a></li>
-                                <li><a href="#">Lifestyle <span class="badge bg-primary float-end">16</span></a></li>
-                            </ul>
-                        </div>
+            </div>
+            
+            <!-- Ad Placement 2 -->
+            <div class="sidebar-widget mb-4">
+                <div class="ad-placeholder bg-light rounded-3 p-4 text-center border-dashed">
+                    <h5 class="text-muted">Advertisement Space</h5>
+                    <p class="small text-muted">Controlled via Django Admin</p>
+                </div>
+            </div>
+            
+            <!-- Categories -->
+            <div class="sidebar-widget">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body">
+                        <h4 class="widget-title fw-bold mb-3 pb-2 border-bottom border-warning text-warning">
+                            <i class="fas fa-folder me-2"></i>Categories
+                        </h4>
+                        <ul class="list-unstyled categories-list">
+                            {% for cat in categories %}
+                            <li class="mb-2">
+                                <a href="{% url 'posts_by_category' cat.id %}" class="d-flex justify-content-between align-items-center text-decoration-none text-dark p-2 rounded-3 category-link">
+                                    <span>{{ cat.category_name }}</span>
+                                    <span class="badge bg-warning text-dark rounded-pill">{{ cat.post_count }}</span>
+                                </a>
+                            </li>
+                            {% endfor %}
+                        </ul>
                     </div>
                 </div>
             </div>
         </div>
-    </main>
+    </div>
+</main>
 
-    <!-- Footer -->
-    <footer class="bg-dark text-white pt-5 pb-3">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-3 col-md-6 mb-4">
-                    <h5>About BlogSphere</h5>
-                    <p>BlogSphere is a platform for writers and readers to share ideas, stories, and expertise on various topics.</p>
-                    <div class="social-links d-flex">
-                        <a href="#" class="me-2"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#" class="me-2"><i class="fab fa-twitter"></i></a>
-                        <a href="#" class="me-2"><i class="fab fa-instagram"></i></a>
-                        <a href="#" class="me-2"><i class="fab fa-linkedin-in"></i></a>
-                        <a href="#"><i class="fab fa-pinterest"></i></a>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6 mb-4">
-                    <h5>Quick Links</h5>
-                    <ul class="list-unstyled">
-                        <li><a href="#" class="text-white-50">Home</a></li>
-                        <li><a href="#" class="text-white-50">About Us</a></li>
-                        <li><a href="#" class="text-white-50">Categories</a></li>
-                        <li><a href="#" class="text-white-50">Write for Us</a></li>
-                        <li><a href="#" class="text-white-50">Contact</a></li>
-                    </ul>
-                </div>
-                <div class="col-lg-3 col-md-6 mb-4">
-                    <h5>Legal</h5>
-                    <ul class="list-unstyled">
-                        <li><a href="#" class="text-white-50">Privacy Policy</a></li>
-                        <li><a href="#" class="text-white-50">Terms of Service</a></li>
-                        <li><a href="#" class="text-white-50">Cookie Policy</a></li>
-                        <li><a href="#" class="text-white-50">Disclaimer</a></li>
-                        <li><a href="#" class="text-white-50">GDPR Compliance</a></li>
-                    </ul>
-                </div>
-                <div class="col-lg-3 col-md-6 mb-4">
-                    <h5>Contact Us</h5>
-                    <ul class="list-unstyled">
-                        <li><i class="fas fa-map-marker-alt me-2"></i> 123 Blog Street, City, Country</li>
-                        <li><i class="fas fa-envelope me-2"></i> info@blogsphere.com</li>
-                        <li><i class="fas fa-phone me-2"></i> +1 234 567 8900</li>
-                    </ul>
-                </div>
-            </div>
-            <hr class="my-4 bg-light">
-            <div class="row">
-                <div class="col-md-6 text-center text-md-start">
-                    <p class="mb-0">&copy; 2023 BlogSphere. All rights reserved.</p>
-                </div>
-                <div class="col-md-6 text-center text-md-end">
-                    <ul class="list-inline mb-0">
-                        <li class="list-inline-item"><a href="#" class="text-white-50">Privacy Policy</a></li>
-                        <li class="list-inline-item"><a href="#" class="text-white-50">Terms of Service</a></li>
-                        <li class="list-inline-item"><a href="#" class="text-white-50">Sitemap</a></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </footer>
+<style>
+    .border-dashed {
+        border: 2px dashed #dee2e6 !important;
+    }
+    
+    .hero-featured {
+        transition: transform 0.3s ease;
+    }
+    
+    .hero-featured:hover {
+        transform: translateY(-5px);
+    }
+    
+    .card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+    }
+    
+    .category-link {
+        transition: all 0.2s ease;
+    }
+    
+    .category-link:hover {
+        background-color: #f8f9fa;
+        padding-left: 1rem !important;
+    }
+    
+    .post-title {
+        transition: color 0.2s ease;
+    }
+    
+    .post-title:hover {
+        color: #0d6efd !important;
+    }
+    
+    /* Enhanced section title styling */
+    .section-title, .widget-title {
+        position: relative;
+        display: inline-block;
+    }
+    
+    .section-title::after, .widget-title::after {
+        content: '';
+        position: absolute;
+        bottom: -5px;
+        left: 0;
+        width: 50px;
+        height: 3px;
+        background: linear-gradient(90deg, #ffc107, #fd7e14);
+        border-radius: 3px;
+    }
+    
+    /* Custom warning color adjustments */
+    .btn-outline-warning {
+        color: #fd7e14;
+        border-color: #fd7e14;
+    }
+    
+    .btn-outline-warning:hover {
+        background-color: #fd7e14;
+        border-color: #fd7e14;
+        color: white;
+    }
+    
+    .bg-warning {
+        background-color: #ffc107 !important;
+    }
+    
+    .border-warning {
+        border-color: #ffc107 !important;
+    }
+    
+    .text-warning {
+        color: #fd7e14 !important;
+    }
+    
+    /* Improved featured tag */
+    .featured-tag {
+        font-size: 0.8rem;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+</style>
 
-    <!-- Bootstrap 5 JS Bundle with Popper -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+{% endblock %}
