@@ -1,7 +1,9 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from blogs.models import Category, Blogs
 from django.contrib.auth.decorators import login_required
-from .forms import CategoryForm
+from .forms import CategoryForm, BlogPostForm
+from django.contrib import messages
+
 
 @login_required(login_url='login')
 def dashboard(request):
@@ -62,3 +64,76 @@ def delete_categories(request, pk):
         'category': category
     }
     return render(request, 'dashboard/delete_categories.html', context)
+
+
+
+def posts(request):
+    posts = Blogs.objects.all()
+    context = {
+        'posts': posts
+    }
+    return render(request, 'dashboard/posts.html', context)
+
+
+@login_required
+def add_posts(request):
+    if request.method == 'POST':
+        form = BlogPostForm(request.POST, request.FILES)
+        if form.is_valid():
+            # Create but don't save yet
+            post = form.save(commit=False)
+            # Set the author to current user
+            post.author = request.user
+            # Save the post
+            post.save()
+            messages.success(request, 'Post created successfully!')
+            return redirect('posts')
+        else:
+            messages.error(request, 'Please correct the errors below.')
+    else:
+        form = BlogPostForm()
+    
+    # Get categories for the dropdown
+    categories = Category.objects.all()
+    
+    context = {
+        'form': form,
+        'categories': categories
+    }
+    return render(request, 'dashboard/add_posts.html', context)
+
+@login_required
+def edit_posts(request, pk):
+    # Get the post, ensure it belongs to current user
+    post = get_object_or_404(Blogs, id=pk, author=request.user)
+    
+    if request.method == 'POST':
+        form = BlogPostForm(request.POST, request.FILES, instance=post)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Post updated successfully!')
+            return redirect('posts')
+    else:
+        form = BlogPostForm(instance=post)
+    
+    context = {
+        'form': form,
+        'post': post
+    }
+    return render(request, 'dashboard/edit_posts.html', context)
+
+@login_required
+def delete_posts(request, pk):
+    # Get the post, ensure it belongs to current user
+    post = get_object_or_404(Blogs, id=pk, author=request.user)
+    
+    if request.method == 'POST':
+        post_title = post.title
+        post.delete()
+        messages.success(request, f'Post "{post_title}" deleted successfully!')
+        return redirect('posts')
+    
+    context = {
+        'post': post
+    }
+    return render(request, 'dashboard/delete_posts.html', context)

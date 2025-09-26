@@ -19,7 +19,7 @@
             </a>
         </li>
         <li {% if '/posts/' in request.path %}class="active"{% endif %}>
-            <a href="#">
+            <a href="{% url 'posts' %}">
                 <i class="fas fa-file-alt"></i>
                 <span>Posts</span>
             </a>
@@ -38,50 +38,50 @@
         </li>
     </ul>
     
-    <!-- Categories Section -->
+    <!-- Quick Actions Section -->
     <div class="sidebar-section">
-        <h3>All Categories</h3>
-        <ul class="category-list">
-            {% if categories %}
-                {% for category in categories %}
-                    <li>
-                        <a href="#">
-                            <i class="fas fa-folder"></i>
-                            {{ category.category_name }}
-                        </a>
-                        <span class="category-count">{{ category.posts_count|default:0 }}</span>
-                    </li>
-                {% endfor %}
-            {% else %}
-                <li class="empty-state">
-                    <i class="fas fa-inbox"></i>
-                    No categories available
-                </li>
-            {% endif %}
+        <h3>Quick Actions</h3>
+        <ul class="quick-actions">
+            <li>
+                <a href="{% url 'posts' %}">
+                    <i class="fas fa-file-alt"></i>
+                    <span>View All Posts</span>
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'categories' %}">
+                    <i class="fas fa-tags"></i>
+                    <span>Manage Categories</span>
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </a>
+            </li>
         </ul>
     </div>
     
-    <!-- Recent Posts Section -->
+    <!-- Statistics Section -->
     <div class="sidebar-section">
-        <h3>Recent Posts</h3>
-        <ul class="recent-posts">
-            {% if recent_posts %}
-                {% for post in recent_posts %}
-                    <li>
-                        <a href="#">
-                            <i class="fas fa-file-alt"></i>
-                            {{ post.title|truncatechars:25 }}
-                        </a>
-                        <span class="post-date">{{ post.created_at|timesince }} ago</span>
-                    </li>
-                {% endfor %}
-            {% else %}
-                <li class="empty-state">
-                    <i class="fas fa-inbox"></i>
-                    No posts available
-                </li>
-            {% endif %}
-        </ul>
+        <h3>Statistics</h3>
+        <div class="stats-info">
+            <div class="stat-item">
+                <i class="fas fa-file-alt"></i>
+                <div class="stat-details">
+                    <span class="stat-number">{{ blogs_count|default:0 }}</span>
+                    <span class="stat-label">Total Posts</span>
+                </div>
+            </div>
+            <div class="stat-item">
+                <i class="fas fa-th-large"></i>
+                <div class="stat-details">
+                    <span class="stat-number">{{ category_count|default:0 }}</span>
+                    <span class="stat-label">Categories</span>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -173,49 +173,84 @@
         color: #e2e8f0;
     }
 
-    .category-list, .recent-posts {
+    .quick-actions {
         list-style: none;
     }
 
-    .category-list li, .recent-posts li {
-        padding: 10px 0;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    .quick-actions li {
+        margin-bottom: 8px;
+    }
+
+    .quick-actions a {
         display: flex;
-        justify-content: space-between;
         align-items: center;
-    }
-
-    .category-list li:last-child, .recent-posts li:last-child {
-        border-bottom: none;
-    }
-
-    .category-list a, .recent-posts a {
+        color: rgba(255, 255, 255, 0.9);
         text-decoration: none;
-        color: #e2e8f0;
-        font-weight: 500;
-        transition: color 0.3s ease;
+        padding: 10px 15px;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        font-size: 14px;
+    }
+
+    .quick-actions a:hover {
+        background: rgba(255, 255, 255, 0.1);
+        color: white;
+        transform: translateX(5px);
+    }
+
+    .quick-actions i {
+        margin-right: 10px;
+        font-size: 16px;
+        width: 20px;
+        text-align: center;
+    }
+
+    .stats-info {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .stat-item {
         display: flex;
         align-items: center;
-        font-size: 14px;
+        background: rgba(255, 255, 255, 0.1);
+        padding: 15px;
+        border-radius: 10px;
+        transition: all 0.3s ease;
     }
 
-    .category-list a i, .recent-posts a i {
-        margin-right: 10px;
-        font-size: 14px;
-        color: #94a3b8;
+    .stat-item:hover {
+        background: rgba(255, 255, 255, 0.15);
     }
 
-    .category-list a:hover, .recent-posts a:hover {
+    .stat-item i {
+        font-size: 24px;
+        margin-right: 15px;
+        color: #fbbf24;
+        background: rgba(255, 255, 255, 0.1);
+        width: 50px;
+        height: 50px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .stat-details {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .stat-number {
+        font-size: 24px;
+        font-weight: 700;
         color: white;
     }
 
-    .category-count, .post-date {
-        background: rgba(255, 255, 255, 0.2);
-        color: white;
-        padding: 3px 8px;
-        border-radius: 12px;
-        font-size: 11px;
-        font-weight: 600;
+    .stat-label {
+        font-size: 14px;
+        color: rgba(255, 255, 255, 0.8);
     }
 
     .empty-state {
