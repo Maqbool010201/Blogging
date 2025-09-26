@@ -35,7 +35,7 @@
 
             <!-- Messages Display -->
             {% if messages %}
-            <div class="messages">
+            <div class="messages mb-4">
                 {% for message in messages %}
                 <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
                     <i class="fas fa-{% if message.tags == 'success' %}check-circle{% else %}exclamation-triangle{% endif %}"></i>
@@ -56,7 +56,6 @@
                                     <th>ID</th>
                                     <th>Title</th>
                                     <th>Category</th>
-                                    <th>Author</th>
                                     <th>Status</th>
                                     <th>Featured</th>
                                     <th>Created At</th>
@@ -86,7 +85,6 @@
                                     <td>
                                         <span class="badge bg-primary">{{ post.category.category_name }}</span>
                                     </td>
-                                    <td>{{ post.author.username }}</td>
                                     <td>
                                         <span class="badge {% if post.status == 'published' %}bg-success{% else %}bg-secondary{% endif %}">
                                             {{ post.status|title }}
@@ -142,10 +140,10 @@
                                 </div>
                                 {% empty %}
                                 <tr>
-                                    <td colspan="8" class="text-center py-4">
+                                    <td colspan="7" class="text-center py-4">
                                         <i class="fas fa-newspaper fa-3x text-muted mb-3"></i>
                                         <h5 class="text-muted">No Posts Found</h5>
-                                        <p class="text-muted">There are no blog posts available yet.</p>
+                                        <p class="text-muted">You haven't created any blog posts yet.</p>
                                         <a href="{% url 'add_posts' %}" class="btn btn-primary">
                                             <i class="fas fa-plus"></i> Create Your First Post
                                         </a>
@@ -277,6 +275,7 @@
         font-size: 28px;
         font-weight: 700;
         color: #1e293b;
+        margin: 0;
     }
 
     .user-info {
@@ -527,6 +526,7 @@
             flex-direction: column;
             align-items: flex-start;
             padding: 15px;
+            text-align: center;
         }
         
         .user-info {
@@ -565,11 +565,9 @@
             margin: 20px;
         }
 
-        /* Hide some columns on mobile */
-        .table td:nth-child(3), /* Category */
-        .table th:nth-child(3),
-        .table td:nth-child(4), /* Author */
-        .table th:nth-child(4) {
+        /* Hide author column on mobile */
+        .table th:nth-child(4),
+        .table td:nth-child(4) {
             display: none;
         }
     }
@@ -593,6 +591,12 @@
 
         .stat-card h4 {
             font-size: 20px;
+        }
+        
+        /* Hide more columns on very small screens */
+        .table th:nth-child(6), /* Created At */
+        .table td:nth-child(6) {
+            display: none;
         }
     }
 </style>
