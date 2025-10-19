@@ -1,10 +1,21 @@
 {% extends 'base/base.html' %}
+{% load ads_tags %}  <!-- Add this line -->
 
 {% block content %}
 
 <div class="container mt-4">
     <div class="row">
         <div class="col-lg-8">
+            <!-- Top Ad for Search Results -->
+            <div class="ad-container mb-4">
+                <div class="ad-label bg-secondary text-white text-center py-1 small">
+                    <i class="fas fa-ad me-1"></i>Advertisement
+                </div>
+                <div class="ad-unit p-3 bg-light text-center">
+                    {% show_ad 'CONTENT_TOP' %}
+                </div>
+            </div>
+            
             <h3 class="text-uppercase text-warning mb-4" style="letter-spacing: 2px;">
                 <i class="fas fa-search me-2"></i>Search Results for "{{ keyword }}"
             </h3>
@@ -37,13 +48,47 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- Middle Ad after every 2 posts -->
+                    {% if forloop.counter|divisibleby:2 and not forloop.last %}
+                    <div class="col-12 mb-4">
+                        <div class="ad-container">
+                            <div class="ad-label bg-secondary text-white text-center py-1 small">
+                                <i class="fas fa-ad me-1"></i>Advertisement
+                            </div>
+                            <div class="ad-unit p-3 bg-light text-center">
+                                {% show_ad 'CONTENT_MIDDLE' %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
                     {% endfor %}
+                </div>
+
+                <!-- Bottom Ad after all posts -->
+                <div class="ad-container mb-4">
+                    <div class="ad-label bg-secondary text-white text-center py-1 small">
+                        <i class="fas fa-ad me-1"></i>Advertisement
+                    </div>
+                    <div class="ad-unit p-3 bg-light text-center">
+                        {% show_ad 'CONTENT_BOTTOM' %}
+                    </div>
                 </div>
             {% endif %}
         </div>
         
         <!-- Sidebar -->
         <div class="col-lg-4">
+            <!-- Sidebar Top Ad -->
+            <div class="ad-container mb-4">
+                <div class="ad-label bg-secondary text-white text-center py-1 small">
+                    <i class="fas fa-ad me-1"></i>Advertisement
+                </div>
+                <div class="ad-unit p-3 bg-light text-center">
+                    {% show_ad 'SIDEBAR_TOP' %}
+                </div>
+            </div>
+
             <!-- Categories -->
             <div class="card border-0 shadow-sm mb-4">
                 <div class="card-body">
@@ -81,6 +126,16 @@
                     </ul>
                 </div>
             </div>
+
+            <!-- Sidebar Bottom Ad -->
+            <div class="ad-container mb-4">
+                <div class="ad-label bg-secondary text-white text-center py-1 small">
+                    <i class="fas fa-ad me-1"></i>Advertisement
+                </div>
+                <div class="ad-unit p-3 bg-light text-center">
+                    {% show_ad 'SIDEBAR_BOTTOM' %}
+                </div>
+            </div>
             
             <!-- Search Widget -->
             <div class="card border-0 shadow-sm">
@@ -100,7 +155,26 @@
     </div>
 </div>
 
+<!-- Add CSS for ad containers -->
 <style>
+    .ad-container {
+        border: 1px solid #e9ecef;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+    
+    .ad-label {
+        font-size: 0.75rem;
+        font-weight: 500;
+    }
+    
+    .ad-unit {
+        min-height: 100px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
     .category-link {
         transition: all 0.2s ease;
     }
@@ -129,5 +203,4 @@
         color: white;
     }
 </style>
-
 {% endblock %}

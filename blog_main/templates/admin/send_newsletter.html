@@ -1,0 +1,17 @@
+{% extends "admin/base_site.html" %}
+{% block content %}
+<div class="content">
+    <h1>Send Newsletter</h1>
+    <p>Fill out the form below to send an email to all subscribers.</p>
+
+    <form method="post" style="max-width: 600px;">
+        {% csrf_token %}
+        <fieldset class="module aligned">
+            {{ form.as_p }}
+        </fieldset>
+        <div class="submit-row">
+            <input type="submit" value="Send Newsletter" class="default">
+        </div>
+    </form>
+</div>
+{% endblock %}

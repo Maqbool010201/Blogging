@@ -1,0 +1,88 @@
+{% extends "base/base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <h1>Write for Us</h1>
+            <p class="lead text-muted">Share your knowledge and expertise with our community of readers.</p>
+            
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-success">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+            
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="name" class="form-label">Your Name *</label>
+                                <input type="text" class="form-control" id="name" name="name" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="email" class="form-label">Email Address *</label>
+                                <input type="email" class="form-control" id="email" name="email" required>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="writing_category" class="form-label">Writing Category *</label>
+                            <select class="form-select" id="writing_category" name="writing_category" required>
+                                <option value="TECH">Technology</option>
+                                <option value="BUSINESS">Business</option>
+                                <option value="LIFESTYLE">Lifestyle</option>
+                                <option value="HEALTH">Health & Wellness</option>
+                                <option value="TRAVEL">Travel</option>
+                                <option value="FOOD">Food & Cooking</option>
+                                <option value="OTHER">Other</option>
+                            </select>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="topic" class="form-label">Proposed Topic *</label>
+                            <input type="text" class="form-control" id="topic" name="topic" 
+                                   placeholder="What topic would you like to write about?" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="writing_experience" class="form-label">Writing Experience</label>
+                            <textarea class="form-control" id="writing_experience" name="writing_experience" 
+                                      rows="3" placeholder="Briefly describe your writing experience (optional)"></textarea>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="portfolio_link" class="form-label">Portfolio/Samples Link</label>
+                            <input type="url" class="form-control" id="portfolio_link" name="portfolio_link" 
+                                   placeholder="https://your-portfolio.com (optional)">
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="message" class="form-label">Article Proposal *</label>
+                            <textarea class="form-control" id="message" name="message" rows="6" 
+                                      placeholder="Tell us about your article idea, key points you'd like to cover, and your unique perspective..." required></textarea>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="fas fa-paper-plane me-2"></i>Submit Proposal
+                        </button>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="mt-4">
+                <h5>What We're Looking For:</h5>
+                <ul class="text-muted">
+                    <li>Original, well-researched content</li>
+                    <li>Unique perspectives and insights</li>
+                    <li>Properly cited sources and references</li>
+                    <li>Engaging and reader-friendly writing style</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

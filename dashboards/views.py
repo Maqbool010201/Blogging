@@ -1,9 +1,27 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from blogs.models import Category, Blogs
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required, user_passes_test
 from .forms import CategoryForm, BlogPostForm
 from django.contrib import messages
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.contrib.auth.models import User
+from .forms import AddUserForm, EditUserForm
+
+# Helper function to check if user has admin permissions
+def is_admin_user(user):
+    return user.has_perm('blogs.add_category') or user.is_superuser
+
+def has_category_permission(user):
+    """Check if user has any category permission"""
+    return (user.has_perm('blogs.add_category') or 
+            user.has_perm('blogs.change_category') or 
+            user.has_perm('blogs.delete_category'))
+
+def has_blog_permission(user):
+    """Check if user has any blog permission"""
+    return (user.has_perm('blogs.add_blogs') or 
+            user.has_perm('blogs.change_blogs') or 
+            user.has_perm('blogs.delete_blogs'))
 
 @login_required(login_url='login')
 def dashboard(request):
@@ -23,10 +41,23 @@ def dashboard(request):
     }
     return render(request, 'dashboard/dashboard.html', context)
 
+# CATEGORY VIEWS
+@login_required
 def categories(request):
-    return render(request, 'dashboard/categories.html') 
+    # Check if user has any category permissions
+    if not has_category_permission(request.user):
+        messages.error(request, "You don't have permission to access categories.")
+        return redirect('dashboard')
+    return render(request, 'dashboard/categories.html')
 
+@login_required
+@permission_required('blogs.add_category', raise_exception=False)
 def add_categories(request):
+    # If user doesn't have permission, redirect with message
+    if not request.user.has_perm('blogs.add_category'):
+        messages.error(request, "You don't have permission to add categories.")
+        return redirect('categories')
+    
     if request.method == 'POST':
         form = CategoryForm(request.POST)
         if form.is_valid():
@@ -43,7 +74,14 @@ def add_categories(request):
     }
     return render(request, 'dashboard/add_categories.html', context)
 
+@login_required
+@permission_required('blogs.change_category', raise_exception=False)
 def edit_categories(request, pk):
+    # If user doesn't have permission, redirect with message
+    if not request.user.has_perm('blogs.change_category'):
+        messages.error(request, "You don't have permission to edit categories.")
+        return redirect('categories')
+    
     try:
         category = Category.objects.get(id=pk)
     except Category.DoesNotExist:
@@ -70,7 +108,14 @@ def edit_categories(request, pk):
     }
     return render(request, 'dashboard/edit_categories.html', context)
 
+@login_required
+@permission_required('blogs.delete_category', raise_exception=False)
 def delete_categories(request, pk):
+    # If user doesn't have permission, redirect with message
+    if not request.user.has_perm('blogs.delete_category'):
+        messages.error(request, "You don't have permission to delete categories.")
+        return redirect('categories')
+    
     try:
         category = Category.objects.get(id=pk)
     except Category.DoesNotExist:
@@ -91,8 +136,14 @@ def delete_categories(request, pk):
     }
     return render(request, 'dashboard/delete_categories.html', context)
 
-@login_required(login_url='login')
+# BLOG POST VIEWS
+@login_required
 def posts(request):
+    # Check if user has any blog permissions
+    if not has_blog_permission(request.user):
+        messages.error(request, "You don't have permission to access posts.")
+        return redirect('dashboard')
+    
     # Get all posts for the current user for counting
     all_posts = Blogs.objects.filter(author=request.user)
     
@@ -122,7 +173,13 @@ def posts(request):
     return render(request, 'dashboard/posts.html', context)
 
 @login_required
+@permission_required('blogs.add_blogs', raise_exception=False)
 def add_posts(request):
+    # If user doesn't have permission, redirect with message
+    if not request.user.has_perm('blogs.add_blogs'):
+        messages.error(request, "You don't have permission to add posts.")
+        return redirect('posts')
+    
     if request.method == 'POST':
         form = BlogPostForm(request.POST, request.FILES)
         if form.is_valid():
@@ -145,7 +202,13 @@ def add_posts(request):
     return render(request, 'dashboard/add_posts.html', context)
 
 @login_required
+@permission_required('blogs.change_blogs', raise_exception=False)
 def edit_posts(request, pk):
+    # If user doesn't have permission, redirect with message
+    if not request.user.has_perm('blogs.change_blogs'):
+        messages.error(request, "You don't have permission to edit posts.")
+        return redirect('posts')
+    
     try:
         # Get the post, ensure it belongs to current user
         post = Blogs.objects.get(id=pk, author=request.user)
@@ -175,7 +238,13 @@ def edit_posts(request, pk):
     return render(request, 'dashboard/edit_posts.html', context)
 
 @login_required
+@permission_required('blogs.delete_blogs', raise_exception=False)
 def delete_posts(request, pk):
+    # If user doesn't have permission, redirect with message
+    if not request.user.has_perm('blogs.delete_blogs'):
+        messages.error(request, "You don't have permission to delete posts.")
+        return redirect('posts')
+    
     try:
         # Get the post, ensure it belongs to current user
         post = Blogs.objects.get(id=pk, author=request.user)
@@ -197,3 +266,95 @@ def delete_posts(request, pk):
         'post': post
     }
     return render(request, 'dashboard/delete_posts.html', context)
+
+# USER MANAGEMENT VIEWS (Only for superusers/staff)
+@login_required
+@user_passes_test(lambda u: u.is_staff or u.is_superuser, login_url='dashboard')
+def users(request):
+    users = User.objects.exclude(pk=None)
+    context = {
+        'users': users
+    }
+    return render(request, 'dashboard/users.html', context)
+
+@login_required
+@permission_required('auth.add_user', raise_exception=False)
+def add_users(request):
+    # If user doesn't have permission, redirect with message
+    if not request.user.has_perm('auth.add_user'):
+        messages.error(request, "You don't have permission to add users.")
+        return redirect('users')
+    
+    if request.method == 'POST':
+        form = AddUserForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'User created successfully!')
+            return redirect('users')
+        else:
+            messages.error(request, 'Please correct the errors below.')
+    else:
+        form = AddUserForm()
+    
+    context = {
+        'form': form,
+    }
+    return render(request, 'dashboard/add_users.html', context)
+
+@login_required
+@permission_required('auth.change_user', raise_exception=False)
+def edit_user(request, pk):
+    # If user doesn't have permission, redirect with message
+    if not request.user.has_perm('auth.change_user'):
+        messages.error(request, "You don't have permission to edit users.")
+        return redirect('users')
+    
+    user_obj = get_object_or_404(User, pk=pk)
+
+    # Prevent users from editing themselves to remove their own permissions
+    if user_obj == request.user and not request.user.is_superuser:
+        messages.error(request, "You cannot edit your own user account.")
+        return redirect('users')
+
+    if request.method == 'POST':
+        form = EditUserForm(request.POST, instance=user_obj)
+        if form.is_valid():
+            form.save()
+            messages.success(request, f'User "{user_obj.username}" updated successfully!')
+            return redirect('users')
+        else:
+            messages.error(request, 'Please correct the errors below.')
+    else:
+        form = EditUserForm(instance=user_obj)
+
+    context = {
+        'form': form,
+        'user_obj': user_obj,
+    }
+    return render(request, 'dashboard/edit_user.html', context)
+
+@login_required
+@permission_required('auth.delete_user', raise_exception=False)
+def delete_user(request, pk):
+    # If user doesn't have permission, redirect with message
+    if not request.user.has_perm('auth.delete_user'):
+        messages.error(request, "You don't have permission to delete users.")
+        return redirect('users')
+    
+    user = get_object_or_404(User, pk=pk)
+    
+    # Prevent users from deleting themselves
+    if user == request.user:
+        messages.error(request, "You cannot delete your own account.")
+        return redirect('users')
+    
+    if request.method == 'POST':
+        username = user.username
+        user.delete()
+        messages.success(request, f'User "{username}" deleted successfully!')
+        return redirect('users')
+    
+    context = {
+        'user': user
+    }
+    return render(request, 'dashboard/delete_user.html', context)

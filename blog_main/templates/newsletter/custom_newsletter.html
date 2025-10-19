@@ -1,0 +1,28 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ subject }}</title>
+</head>
+<body style="font-family: Arial, sans-serif; background:#f4f6f8; padding:20px; margin:0;">
+    <div style="max-width:680px; margin:0 auto; background:#fff; border-radius:8px; overflow:hidden;">
+        <div style="background:linear-gradient(90deg,#ffc107,#fd7e14); padding:20px; text-align:center;">
+            <img src="{{ domain }}{% static 'images/logo.png' %}" alt="{{ site_name }}" style="max-width:140px;">
+        </div>
+        <div style="padding:24px; color:#333;">
+            <h2>{{ subject }}</h2>
+            <div style="line-height:1.5;">
+                {{ message|linebreaks }}
+            </div>
+            <div style="text-align:center; margin-top:20px;">
+                <a href="{{ domain }}" style="display:inline-block; padding:10px 20px; background:#fd7e14; color:#fff; border-radius:5px; text-decoration:none;">Visit Website</a>
+            </div>
+        </div>
+        <div style="padding:16px; font-size:13px; color:#7b8794; text-align:center;">
+            <small>{{ site_name }} • <a href="{{ domain }}">Visit site</a></small>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,19 @@
+{% load breadcrumb_tags %}
+
+{# Only show breadcrumbs if they exist AND we are not on home or sitemap pages #}
+{% if breadcrumbs and request.resolver_match %}
+    {% if request.resolver_match.url_name != 'home' and request.resolver_match.url_name != 'django.contrib.sitemaps.views.sitemap' %}
+        <nav aria-label="breadcrumb" class="bg-light py-2 px-3 rounded mb-3">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+                {% for crumb in breadcrumbs %}
+                    {% if crumb.is_active %}
+                        <li class="breadcrumb-item active" aria-current="page">{{ crumb.title }}</li>
+                    {% else %}
+                        <li class="breadcrumb-item"><a href="{{ crumb.url }}">{{ crumb.title }}</a></li>
+                    {% endif %}
+                {% endfor %}
+            </ol>
+        </nav>
+    {% endif %}
+{% endif %}

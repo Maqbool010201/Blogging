@@ -28,6 +28,11 @@ SECRET_KEY = 'django-insecure-(bdej21*!t48n04s2$t=04l3z*3ooyh+t*bf%ziz#tp7dnv@py
 DEBUG = True
 
 ALLOWED_HOSTS = []
+DOMAIN = ['wisemixmedia.com', 'www.wisemixmedia.com']
+
+
+SITE_NAME = 'wisemixmedia.com'
+DOMAIN = 'https://wisemixmedia.com/'
 
 
 # Application definition
@@ -48,8 +53,30 @@ INSTALLED_APPS = [
     'django.contrib.sitemaps',
     'django.contrib.sites',
     'dashboards',
+    'tinymce',
 
 ]
+
+# TinyMCE Configuration
+TINYMCE_DEFAULT_CONFIG = {
+    "height": 500,
+    "width": "100%",
+    "menubar": "file edit view insert format tools table help",
+    "plugins": "advlist autolink lists link image charmap print preview anchor searchreplace visualblocks code "
+               "fullscreen insertdatetime media table paste code help wordcount",
+    "toolbar": "undo redo | bold italic underline strikethrough | fontselect fontsizeselect formatselect | "
+               "alignleft aligncenter alignright alignjustify | outdent indent |  numlist bullist checklist | "
+               "forecolor backcolor casechange permanentpen formatpainter removeformat | pagebreak | charmap emoticons | "
+               "fullscreen  preview save print | insertfile image media pageembed template link anchor codesample | "
+               "a11ycheck ltr rtl | showcomments addcomment code",
+    "custom_undo_redo_levels": 10,
+    "link_class_list": [
+        {"title": "None", "value": ""},
+        {"title": "Blue Link", "value": "blue-link"},
+    ],
+    "browser_spellcheck": True,
+    "contextmenu": False,
+}
 
 
 MIDDLEWARE = [
@@ -60,6 +87,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'blogs.middleware.BreadcrumbMiddleware',
 ]
 
 ROOT_URLCONF = 'blog_main.urls'
@@ -74,7 +102,11 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'blogs.context_processors.get_categories',  # Custom context processor
+                'blogs.context_processors.get_categories',
+                'blogs.context_processors.advanced_canonical_url',
+                'blogs.context_processors.breadcrumbs',
+                'blogs.context_processors.seo_context',
+                'blogs.context_processors.social_media_links',
             ],
         },
     },
@@ -145,6 +177,7 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media' 
 
 
+
 # Crispy Forms settings
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap4"
 CRISPY_TEMPLATE_PACK = "bootstrap4"
@@ -152,3 +185,14 @@ CRISPY_TEMPLATE_PACK = "bootstrap4"
 
 SITE_ID = 1
 DOMAIN = 'http://127.0.0.1:8000/' 
+
+
+# EMAIL SETTINGS
+# -------------------------------------
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'maqboolthaheem30@gmail.com'          # 🔹 Replace with your Gmail address
+EMAIL_HOST_PASSWORD = 'hjyi sbjp zqqy akcw'    # 🔹 Replace with your Gmail app password
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER

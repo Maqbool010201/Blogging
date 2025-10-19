@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<h1>All Categories</h1>
+
+{% if request.breadcrumbs %}
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    {% for crumb in request.breadcrumbs %}
+      {% if crumb.is_active %}
+        <li class="breadcrumb-item active" aria-current="page">{{ crumb.title }}</li>
+      {% else %}
+        <li class="breadcrumb-item"><a href="{{ crumb.url }}">{{ crumb.title }}</a></li>
+      {% endif %}
+    {% endfor %}
+  </ol>
+</nav>
+{% endif %}
+
+<ul>
+  {% for category in categories %}
+    <li>
+      <a href="{% url 'posts_by_category' category.id %}">{{ category.category_name }}</a>
+      ({{ category.post_count }})
+    </li>
+  {% empty %}
+    <li>No categories found.</li>
+  {% endfor %}
+</ul>
+{% endblock %}

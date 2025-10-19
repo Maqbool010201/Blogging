@@ -1,0 +1,56 @@
+{% if ad %}
+<div class="ad-container {{ placement_area }} {{ ad_size }}" data-ad-id="{{ ad.id }}">
+    <div class="ad-label text-muted mb-1"><small>Advertisement</small></div>
+
+    <div class="ad-content text-center">
+        {% if ad.ad_type == 'GOOGLE_ADSENSE' %}
+            <div class="google-ad">
+                {{ ad.ad_code|safe }}
+            </div>
+
+        {% elif ad.ad_type == 'AFFILIATE' or ad.ad_type == 'BANNER' %}
+            <a href="{{ ad.destination_url }}" 
+               target="_blank" 
+               rel="noopener noreferrer nofollow"
+               onclick="trackAdClick({{ ad.id }})">
+                {% if ad.image %}
+                    <img src="{{ ad.image.url }}" 
+                         alt="{{ ad.alt_text|default:'Advertisement' }}" 
+                         class="img-fluid rounded ad-image">
+                {% endif %}
+            </a>
+
+        {% elif ad.ad_type in 'VIDEO_IN_STREAM VIDEO_OUT_STREAM BUMPER' %}
+            {% if ad.ad_code %}
+                {{ ad.ad_code|safe }}
+            {% else %}
+                <video class="ad-video rounded" controls muted autoplay playsinline>
+                    <source src="{{ ad.image.url }}" type="video/mp4">
+                    Your browser does not support video playback.
+                </video>
+            {% endif %}
+
+        {% elif ad.ad_type == 'CUSTOM' %}
+            <div class="custom-ad">
+                {{ ad.ad_code|safe }}
+            </div>
+        {% endif %}
+    </div>
+
+    <div class="ad-footer text-muted mt-1">
+        <small>{{ ad.name }}</small>
+    </div>
+</div>
+
+<script>
+function trackAdClick(adId) {
+    fetch(`/api/ads/${adId}/click/`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': '{{ csrf_token }}',
+            'Content-Type': 'application/json',
+        },
+    }).catch(console.error);
+}
+</script>
+{% endif %}

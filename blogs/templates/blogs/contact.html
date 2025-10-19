@@ -1,0 +1,68 @@
+{% extends "base/base.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="mb-0">
+                        <i class="fas fa-envelope me-2"></i>
+                        Contact Us
+                    </h2>
+                </div>
+                <div class="card-body">
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                    
+                    <p class="text-muted mb-4">
+                        Have questions or suggestions? We'd love to hear from you. Send us a message and we'll respond as soon as possible.
+                    </p>
+                    
+                    <!-- Crispy form rendering -->
+                    {% crispy form %}
+                    
+                </div>
+            </div>
+            
+            <!-- Additional contact information -->
+            <div class="row mt-4">
+                <div class="col-md-4 text-center">
+                    <div class="card border-0">
+                        <div class="card-body">
+                            <i class="fas fa-map-marker-alt fa-2x text-primary mb-3"></i>
+                            <h5>Our Location</h5>
+                            <p class="text-muted">123 Blog Street<br>City, Country</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 text-center">
+                    <div class="card border-0">
+                        <div class="card-body">
+                            <i class="fas fa-envelope fa-2x text-primary mb-3"></i>
+                            <h5>Email Us</h5>
+                            <p class="text-muted">info@blogwebsite.com</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 text-center">
+                    <div class="card border-0">
+                        <div class="card-body">
+                            <i class="fas fa-phone fa-2x text-primary mb-3"></i>
+                            <h5>Call Us</h5>
+                            <p class="text-muted">+923111615105</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

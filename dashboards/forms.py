@@ -1,5 +1,7 @@
 from django import forms
 from blogs.models import Category, Blogs
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
 
 class CategoryForm(forms.ModelForm):
     class Meta:
@@ -23,3 +25,25 @@ class BlogPostForm(forms.ModelForm):
                 field.widget.attrs['rows'] = 8
             if field_name == 'short_description':
                 field.widget.attrs['rows'] = 4
+
+
+
+class AddUserForm(UserCreationForm):
+    class Meta:
+        model = User
+        fields = ('username', 'email', 'first_name', 'last_name', 'is_active', 'is_staff', 
+                  'is_superuser', 'groups', 'user_permissions',)
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # If editing an existing user, make username read-only
+        if self.instance and self.instance.pk:
+            self.fields['username'].disabled = True
+
+
+
+class EditUserForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ('username','email', 'first_name', 'last_name', 'is_active', 'is_staff', 
+                  'is_superuser', 'groups', 'user_permissions',)

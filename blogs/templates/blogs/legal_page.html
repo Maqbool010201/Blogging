@@ -1,0 +1,31 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block title %}
+    {{ meta_title|default:page.title }}
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-lg-10 mx-auto">
+
+            <!-- Breadcrumbs (optional include) -->
+            {% include "includes/advanced_breadcrumbs.html" %}
+
+            <!-- Legal Page Title -->
+            <h1 class="mb-3">{{ page.title }}</h1>
+
+            <!-- Last Updated -->
+            <p class="text-muted mb-4">
+                Last updated: {{ page.last_updated|date:"F j, Y" }}
+            </p>
+
+            <!-- Legal Content -->
+            <div class="legal-content">
+                {{ page.content|safe }}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

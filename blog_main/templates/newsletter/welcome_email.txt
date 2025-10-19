@@ -1,0 +1,15 @@
+Welcome, {{ name }}!
+
+Thank you for subscribing to {{ site_name }}. We're excited to have you onboard! From now on, you’ll receive selected articles and updates.
+
+{% if latest_posts %}
+Latest Articles:
+{% for post in latest_posts %}
+- {{ post.title }}: {{ domain }}blogs/{{ post.slug }}/
+{% endfor %}
+{% endif %}
+
+Visit our website: {{ domain }}
+
+© {{ site_name }} {{ now|date:"Y" }}. All rights reserved.
+If you did not subscribe, please ignore this email.

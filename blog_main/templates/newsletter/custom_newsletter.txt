@@ -1,0 +1,7 @@
+{{ subject }}
+
+{{ message }}
+
+Visit our website: {{ domain }}
+
+© {{ site_name }}. All rights reserved.

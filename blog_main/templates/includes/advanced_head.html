@@ -1,0 +1,65 @@
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Robots -->
+    <meta name="robots" content="index, follow">
+
+    <!-- ✅ Dynamic & Brand-consistent Title -->
+    <title>
+        {% block title %}
+            {% if meta_title %}
+                {{ meta_title }} - WiseMixMedia
+            {% elif post %}
+                {{ post.meta_title|default:post.title }} - WiseMixMedia
+            {% elif category %}
+                {{ category.meta_title|default:category.category_name }} - WiseMixMedia
+            {% else %}
+                WiseMixMedia - Smart Mix of Knowledge & Trends
+            {% endif %}
+        {% endblock %}
+    </title>
+
+    <!-- ✅ Meta Description & Keywords -->
+    <meta name="description" content="{{ meta_description|default:'WiseMixMedia — A multi-niche blog sharing insights on tech, trends, business, lifestyle, and creativity.' }}">
+    <meta name="keywords" content="{{ meta_keywords|default:'WiseMixMedia, blogging, tech, lifestyle, news, digital trends, business' }}">
+
+    <!-- ✅ Canonical URL -->
+    {% if canonical_url %}
+        <link rel="canonical" href="{{ canonical_url }}">
+    {% else %}
+        <link rel="canonical" href="{{ request.build_absolute_uri }}">
+    {% endif %}
+
+    <!-- ✅ AMP canonical -->
+    {% if amp_canonical %}
+        <link rel="amphtml" href="{{ amp_canonical }}">
+    {% endif %}
+
+    <!-- ✅ Open Graph Tags -->
+    <meta property="og:type" content="{% block og_type %}website{% endblock %}">
+    <meta property="og:site_name" content="WiseMixMedia">
+    <meta property="og:title" content="{{ og_title|default:meta_title|default:'WiseMixMedia - Smart Mix of Knowledge & Trends' }}">
+    <meta property="og:description" content="{{ og_description|default:meta_description|default:'Your smart mix of trending news, tech, and insights.' }}">
+    <meta property="og:image" content="{% if og_image %}{{ og_image }}{% else %}{% static 'images/og_default.jpg' %}{% endif %}">
+    <meta property="og:url" content="{{ canonical_url|default:request.build_absolute_uri }}">
+
+    <!-- ✅ Twitter Card -->
+    <meta name="twitter:card" content="{% block twitter_card %}summary_large_image{% endblock %}">
+    <meta name="twitter:title" content="{{ twitter_title|default:meta_title|default:'WiseMixMedia - Smart Mix of Knowledge & Trends' }}">
+    <meta name="twitter:description" content="{{ twitter_description|default:meta_description|default:'Your smart mix of trending news, tech, and insights.' }}">
+    <meta name="twitter:image" content="{% if twitter_image %}{{ twitter_image }}{% else %}{% static 'images/og_default.jpg' %}{% endif %}">
+    <meta name="twitter:site" content="@WiseMixMedia">
+
+    <!-- ✅ Favicon -->
+    <link rel="icon" href="{% static 'images/favicon.ico' %}">
+
+    <!-- ✅ Stylesheets -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+    {% block extra_head %}{% endblock %}
+</head>

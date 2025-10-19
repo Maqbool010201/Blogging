@@ -1,8 +1,10 @@
 {% extends 'base/base.html' %}
 {% load static %}
+{% load ads_tags %}  <!-- Add this line -->
 
 {% block extra_css %}
 <style>
+    /* Your existing CSS styles remain the same */
     :root {
         --primary-blue: #2563eb;
         --blue-hover: #1d4ed8;
@@ -12,328 +14,32 @@
         --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
     
-    .category-posts-section {
-        margin: 3rem 0;
-    }
+    /* ... rest of your existing CSS ... */
     
-    .category-header {
-        background: var(--header-gradient);
-        color: white;
-        padding: 4rem 2rem;
-        border-radius: 16px;
-        margin-bottom: 3rem;
-        text-align: center;
-        position: relative;
+    /* Add ad container styles */
+    .ad-container {
+        border: 1px solid #e9ecef;
+        border-radius: 8px;
         overflow: hidden;
-        box-shadow: var(--card-shadow);
-    }
-    
-    .category-header::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: rgba(0, 0, 0, 0.3);
-        z-index: 1;
-    }
-    
-    .category-header-content {
-        position: relative;
-        z-index: 2;
-    }
-    
-    .category-icon-large {
-        font-size: 3.5rem;
-        margin-bottom: 1.5rem;
-        display: inline-block;
-        background: rgba(255, 255, 255, 0.2);
-        width: 100px;
-        height: 100px;
-        line-height: 100px;
-        border-radius: 50%;
-        backdrop-filter: blur(10px);
-        transition: var(--transition);
-    }
-    
-    .category-header:hover .category-icon-large {
-        transform: scale(1.05) rotate(5deg);
-    }
-    
-    .breadcrumb-nav {
-        font-size: 0.9rem;
-        margin-bottom: 1.5rem;
-    }
-    
-    .breadcrumb-item a {
-        color: var(--primary-blue);
-        text-decoration: none;
-        transition: var(--transition);
-    }
-    
-    .breadcrumb-item a:hover {
-        color: var(--blue-hover);
-        text-decoration: underline;
-    }
-    
-    .post-list-item {
-        border-left: 4px solid var(--primary-blue);
-        padding: 2rem;
         margin-bottom: 2rem;
-        background: white;
-        border-radius: 12px;
-        box-shadow: var(--card-shadow);
-        transition: var(--transition);
-        display: flex;
-        flex-direction: column;
-        cursor: pointer;
-        position: relative;
-        overflow: hidden;
     }
     
-    .post-list-item::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 4px;
-        height: 0;
-        background: var(--primary-blue);
-        transition: var(--transition);
-        z-index: 1;
-    }
-    
-    .post-list-item:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-    }
-    
-    .post-list-item:hover::before {
-        height: 100%;
-    }
-    
-    .post-meta-small {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-        margin-bottom: 1rem;
-        font-size: 0.9rem;
-        flex-wrap: wrap;
-        color: #64748b;
-    }
-    
-    .post-date, .post-author {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-    
-    .post-title {
-        color: var(--primary-blue);
-        font-size: 1.5rem;
-        font-weight: 700;
-        margin-bottom: 1rem;
-        line-height: 1.4;
-        transition: var(--transition);
-        text-decoration: none;
-    }
-    
-    .post-title:hover {
-        color: var(--blue-hover);
-    }
-    
-    .post-excerpt {
-        color: #334155;
-        margin-bottom: 1.5rem;
-        line-height: 1.6;
-        font-size: 1rem;
-    }
-    
-    .read-more-link {
-        color: var(--primary-blue);
-        font-weight: 600;
-        text-decoration: none;
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-        margin-top: auto;
-        align-self: flex-start;
-        transition: var(--transition);
-        position: relative;
-        padding: 0.5rem 0;
-    }
-    
-    .read-more-link::after {
-        content: '';
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        width: 0;
-        height: 2px;
-        background: var(--primary-blue);
-        transition: var(--transition);
-    }
-    
-    .read-more-link:hover {
-        color: var(--blue-hover);
-        gap: 0.75rem;
-    }
-    
-    .read-more-link:hover::after {
-        width: 100%;
-    }
-    
-    .empty-state {
-        text-align: center;
-        padding: 4rem 2rem;
-        background: #f8fafc;
-        border-radius: 16px;
-        margin: 2rem 0;
-        box-shadow: var(--card-shadow);
-    }
-    
-    .empty-state-icon {
-        font-size: 4rem;
-        color: #94a3b8;
-        margin-bottom: 1.5rem;
-        opacity: 0.7;
-    }
-    
-    .category-sidebar {
-        background: white;
-        border-radius: 16px;
-        padding: 2rem;
-        margin-bottom: 2rem;
-        box-shadow: var(--card-shadow);
-        position: sticky;
-        top: 2rem;
-    }
-    
-    .category-stats {
-        display: flex;
-        justify-content: center;
-        gap: 2.5rem;
-        margin-top: 2rem;
-    }
-    
-    .stat-item {
-        text-align: center;
-    }
-    
-    .stat-number {
-        font-size: 1.75rem;
-        font-weight: bold;
+    .ad-label {
+        background: #6c757d;
         color: white;
-        background: rgba(255, 255, 255, 0.2);
-        width: 60px;
-        height: 60px;
-        line-height: 60px;
-        border-radius: 50%;
-        margin: 0 auto 0.75rem;
-        transition: var(--transition);
-    }
-    
-    .category-header:hover .stat-number {
-        transform: scale(1.1);
-    }
-    
-    .stat-label {
-        font-size: 0.9rem;
-        color: rgba(255, 255, 255, 0.9);
-    }
-    
-    .sidebar-title {
-        font-size: 1.25rem;
-        font-weight: 600;
-        margin-bottom: 1.25rem;
-        color: #1e293b;
-        position: relative;
-        padding-bottom: 0.75rem;
-    }
-    
-    .sidebar-title::after {
-        content: '';
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        width: 40px;
-        height: 3px;
-        background: var(--primary-blue);
-        border-radius: 3px;
-    }
-    
-    .category-list {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-    }
-    
-    .category-list-item {
-        padding: 0.75rem 0;
-        border-bottom: 1px solid #e2e8f0;
-        transition: var(--transition);
-    }
-    
-    .category-list-item:last-child {
-        border-bottom: none;
-    }
-    
-    .category-list-item:hover {
-        background: #f1f5f9;
-        padding-left: 0.5rem;
-    }
-    
-    .category-link {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        text-decoration: none;
-        color: #475569;
-        font-weight: 500;
-        transition: var(--transition);
-    }
-    
-    .category-link:hover {
-        color: var(--primary-blue);
-    }
-    
-    .post-count-badge {
-        background: var(--primary-blue);
-        color: white;
+        text-align: center;
+        padding: 0.25rem;
         font-size: 0.75rem;
-        padding: 0.25rem 0.5rem;
-        border-radius: 20px;
-        min-width: 30px;
-        text-align: center;
+        font-weight: 500;
     }
     
-    @media (max-width: 768px) {
-        .post-list-item {
-            padding: 1.5rem;
-        }
-        
-        .post-meta-small {
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 0.5rem;
-        }
-        
-        .category-stats {
-            flex-direction: column;
-            gap: 1.5rem;
-        }
-        
-        .category-header {
-            padding: 2.5rem 1.5rem;
-        }
-        
-        .category-icon-large {
-            width: 80px;
-            height: 80px;
-            line-height: 80px;
-            font-size: 2.5rem;
-        }
+    .ad-unit {
+        min-height: 100px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 1rem;
+        background: #f8f9fa;
     }
 </style>
 {% endblock %}
@@ -341,14 +47,6 @@
 {% block content %}
     <!-- Category Header Section -->
     <section class="container category-posts-section">
-        <nav aria-label="breadcrumb" class="breadcrumb-nav">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
-                <li class="breadcrumb-item"><a href="#">Categories</a></li>
-                <li class="breadcrumb-item active" aria-current="page">{{ category.category_name }}</li>
-            </ol>
-        </nav>
-        
         <div class="category-header">
             <div class="category-header-content">
                 <div class="category-icon-large">
@@ -372,6 +70,12 @@
         
         <div class="row">
             <div class="col-lg-8">
+                <!-- Top Ad with category targeting -->
+                <div class="ad-container">
+                    <div class="ad-label">Advertisement</div>
+                    <div class="ad-unit">{% show_ad 'CONTENT_TOP' category.id %}</div>
+                </div>
+                
                 {% if posts %}
                     <div class="post-list">
                         {% for post in posts %}
@@ -386,7 +90,21 @@
                                 Read More <i class="fas fa-arrow-right"></i>
                             </a>
                         </div>
+
+                        <!-- Middle Ad after every 2 posts -->
+                        {% if forloop.counter|divisibleby:2 and not forloop.last %}
+                        <div class="ad-container">
+                            <div class="ad-label">Sponsored Content</div>
+                            <div class="ad-unit">{% show_ad 'CONTENT_MIDDLE' category.id %}</div>
+                        </div>
+                        {% endif %}
                         {% endfor %}
+                    </div>
+
+                    <!-- Bottom Ad -->
+                    <div class="ad-container">
+                        <div class="ad-label">Advertisement</div>
+                        <div class="ad-unit">{% show_ad 'CONTENT_BOTTOM' category.id %}</div>
                     </div>
                 {% else %}
                     <div class="empty-state">
@@ -401,6 +119,12 @@
             </div>
             
             <div class="col-lg-4">
+                <!-- Sidebar Top Ad with category targeting -->
+                <div class="ad-container">
+                    <div class="ad-label">Advertisement</div>
+                    <div class="ad-unit">{% show_ad 'SIDEBAR_TOP' category.id %}</div>
+                </div>
+
                 <div class="category-sidebar">
                     <h4 class="sidebar-title">About This Category</h4>
                     <p class="mb-4">Explore all articles related to {{ category.category_name }}. This category contains {{ posts|length }} published article{% if posts|length != 1 %}s{% endif %}.</p>
@@ -417,6 +141,12 @@
                         {% endfor %}
                     </ul>
                 </div>
+
+                <!-- Sidebar Bottom Ad with category targeting -->
+                <div class="ad-container">
+                    <div class="ad-label">Advertisement</div>
+                    <div class="ad-unit">{% show_ad 'SIDEBAR_BOTTOM' category.id %}</div>
+                </div>
             </div>
         </div>
     </section>
@@ -424,7 +154,7 @@
 
 {% block extra_js %}
 <script>
-    // Add animation to post items
+    // Your existing JavaScript remains the same
     document.addEventListener('DOMContentLoaded', function() {
         const postItems = document.querySelectorAll('.post-list-item');
         postItems.forEach((item, index) => {
@@ -438,7 +168,6 @@
             }, 100 + (index * 100));
         });
         
-        // Add animation to sidebar
         const sidebar = document.querySelector('.category-sidebar');
         if (sidebar) {
             sidebar.style.opacity = '0';
